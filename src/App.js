@@ -4,6 +4,9 @@ import * as BooksAPI from './BooksAPI'
 import ListBooks from './ListBooks'
 
 class BooksApp extends React.Component {
+
+  bookShelves = ['currentlyReading', 'wantToRead', 'read']
+
   state = {
     /**
      * TODO: Instead of using this state variable to keep track of which page
@@ -12,10 +15,7 @@ class BooksApp extends React.Component {
      * pages, as well as provide a good URL they can bookmark and share.
      */
     showSearchPage: false,
-    books: [],
-    currentlyReading: [],
-    wantToRead: [],
-    read:[]
+    books: []
   }
 
   componentDidMount() {
@@ -25,6 +25,27 @@ class BooksApp extends React.Component {
                       this.setState(({books}) )
                     }
                   )
+  }
+
+  changeBookShelf(book, shelf){
+      let updatedBooks = []
+      BooksAPI.update(book, shelf)
+          .then(
+              (updateResponse) => {
+                  this.bookShelves.forEach((shelfName) => {
+                                  updateResponse[shelfName].forEach(
+                                      (bookId) => {
+                                          const index = this.state.books.findIndex(book => book.id === bookId)
+                                          let tempBook = this.state.books[index]
+                                          tempBook['shelf'] = shelfName
+                                          updatedBooks.push(tempBook);
+                                      }
+                                  )
+                      }
+                  )
+                  this.setState({books: updatedBooks} )
+              }
+       )
   }
 
   render() {
@@ -58,9 +79,24 @@ class BooksApp extends React.Component {
             </div>
             <div className="list-books-content">
               <div>
-                  <ListBooks books={this.state.books} heading='Currently Reading' type='currentlyReading'/>
-                  <ListBooks books={this.state.books} heading='Want to Read' type='wantToRead'/>
-                  <ListBooks books={this.state.books} heading='Read' type='read'/>
+                  <ListBooks books={this.state.books} heading='Currently Reading' type='currentlyReading'
+                            shelfUpdateHandler={
+                                (book, shelf) => {
+                                    this.changeBookShelf(book, shelf)
+                                }
+                            }/>
+                  <ListBooks books={this.state.books} heading='Want to Read' type='wantToRead'
+                             shelfUpdateHandler={
+                                 (book, shelf) => {
+                                     this.changeBookShelf(book, shelf)
+                                 }
+                             }/>
+                  <ListBooks books={this.state.books} heading='Read' type='read'
+                             shelfUpdateHandler={
+                                 (book, shelf) => {
+                                     this.changeBookShelf(book, shelf)
+                                 }
+                             }/>
               </div>
             </div>
             <div className="open-search">
