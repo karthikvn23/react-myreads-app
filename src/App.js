@@ -5,7 +5,11 @@ import ListBooks from './ListBooks'
 
 class BooksApp extends React.Component {
 
-  bookShelves = ['currentlyReading', 'wantToRead', 'read']
+  bookShelves = {
+                  currentlyReading: {shelfName: 'Currently Reading'},
+                  wantToRead: {shelfName: 'Want to Read'},
+                  read: {shelfName:'Read'}
+                }
 
   state = {
     /**
@@ -32,7 +36,7 @@ class BooksApp extends React.Component {
       BooksAPI.update(book, shelf)
           .then(
               (updateResponse) => {
-                  this.bookShelves.forEach((shelfName) => {
+                  Object.keys(this.bookShelves).forEach((shelfName) => {
                                   updateResponse[shelfName].forEach(
                                       (bookId) => {
                                           const index = this.state.books.findIndex(book => book.id === bookId)
@@ -79,19 +83,19 @@ class BooksApp extends React.Component {
             </div>
             <div className="list-books-content">
               <div>
-                  <ListBooks books={this.state.books} heading='Currently Reading' type='currentlyReading'
+                  <ListBooks books={this.state.books} shelfName='Currently Reading' type='currentlyReading'
                             shelfUpdateHandler={
                                 (book, shelf) => {
                                     this.changeBookShelf(book, shelf)
                                 }
                             }/>
-                  <ListBooks books={this.state.books} heading='Want to Read' type='wantToRead'
+                  <ListBooks books={this.state.books} shelfName='Want to Read' type='wantToRead'
                              shelfUpdateHandler={
                                  (book, shelf) => {
                                      this.changeBookShelf(book, shelf)
                                  }
                              }/>
-                  <ListBooks books={this.state.books} heading='Read' type='read'
+                  <ListBooks books={this.state.books} shelfName='Read' type='read'
                              shelfUpdateHandler={
                                  (book, shelf) => {
                                      this.changeBookShelf(book, shelf)

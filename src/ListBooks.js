@@ -3,11 +3,11 @@ import React, { Component } from 'react'
 class ListBooks extends Component{
     render(){
 
-        const { books, heading, type } = this.props
+        const { books, shelfName, type } = this.props
 
         return(
             <div className="bookshelf">
-                <h2 className="bookshelf-title">{heading}</h2>
+                <h2 className="bookshelf-title">{shelfName}</h2>
                 <div className="bookshelf-books">
                     <ol className="books-grid">
                         {
@@ -23,7 +23,9 @@ class ListBooks extends Component{
                                                             console.log('event value', event.target.value)
                                                             this.props.shelfUpdateHandler(book, event.target.value)
                                                         }
-                                                    }>
+                                                    }
+                                                    value={book.shelf}
+                                                    >
                                                         <option value="move" disabled>Move to...</option>
                                                         <option value="wantToRead">Want to Read</option>
                                                         <option value="currentlyReading">Currently Reading</option>
