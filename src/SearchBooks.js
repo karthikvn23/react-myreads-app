@@ -21,6 +21,14 @@ class SearchBooks extends  Component{
     render(){
         const { currentBooks } = this.props
 
+        const showBooks = this.state.searchBookResults.map(
+            (book) => {
+                if( ! book.hasOwnProperty('imageLinks'))
+                    book['imageLinks']=[]
+                return book
+            }
+        )
+
         return(
             <div className="search-books">
                 <div className="search-books-bar">
@@ -40,7 +48,7 @@ class SearchBooks extends  Component{
                     <div className="search-books-results">
                         <ol className="books-grid">
                             {
-                                this.state.searchBookResults.map(
+                                showBooks.map(
                                     (book) => {
 
                                                 let index = currentBooks.findIndex( (currentBook) => currentBook.id === book.id)
@@ -50,6 +58,7 @@ class SearchBooks extends  Component{
                                                 <li key={book.id}>
                                                     <div className="book">
                                                         <div className="book-top">
+
                                                             <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.thumbnail})` }}></div>
                                                             <div className="book-shelf-changer">
                                                                 <select onChange={
