@@ -1,19 +1,40 @@
 import React, { Component } from 'react'
-import { Link} from 'react-router-dom';
+import * as BooksAPI from "./BooksAPI";
 
-class ListBooks extends Component{
+class SearchBooks extends  Component{
+
+    state = {
+        searchBookResults: []
+    }
+
+    performSearch = (query) => {
+        if( query !== '')
+            BooksAPI.search(query)
+                .then((searchBookResults) => {
+                        console.log('searchBookResults.length', searchBookResults.length)
+                        if(searchBookResults !== 'undefined')
+                            this.setState(({searchBookResults}) )
+                    }
+                )
+    }
+
     render(){
-
-        const { books, shelfName, type } = this.props
-
         return(
-            <div>
-                <div className="bookshelf">
-                    <h2 className="bookshelf-title">{shelfName}</h2>
-                    <div className="bookshelf-books">
+            <div className="search-books">
+                <div className="search-books-bar">
+                    <button className="close-search">Close</button>
+                    <div className="search-books-input-wrapper">
+                        <input type="text" placeholder="Search by title or author"
+                               onChange={ (event) => {this.performSearch(event.target.value)} }/>
+                    </div>
+                </div>
+
+                {
+                    typeof(this.state.searchBookResults['items']) === 'undefined' &&
+                    <div className="search-books-results">
                         <ol className="books-grid">
                             {
-                                books.filter( (book) => (book.shelf === type) ).map(
+                                this.state.searchBookResults.map(
                                     (book) => (
                                         <li key={book.id}>
                                             <div className="book">
@@ -22,11 +43,9 @@ class ListBooks extends Component{
                                                     <div className="book-shelf-changer">
                                                         <select onChange={
                                                             (event) => {
-                                                                console.log('event value', event.target.value)
-                                                                this.props.shelfUpdateHandler(book, event.target.value)
                                                             }
                                                         }
-                                                        value={book.shelf}
+                                                                value={book.shelf}
                                                         >
                                                             <option value="move" disabled>Move to...</option>
                                                             <option value="wantToRead">Want to Read</option>
@@ -37,7 +56,7 @@ class ListBooks extends Component{
                                                     </div>
                                                 </div>
                                                 <div className="book-title">{book.title}</div>
-                                                <div className="book-authors">{book.authors.join(', ')}</div>
+                                                <div className="book-authors">{book.authors}</div>
                                             </div>
                                         </li>
                                     )
@@ -45,13 +64,11 @@ class ListBooks extends Component{
                             }
                         </ol>
                     </div>
-                    <Link to="/search" className="open-search">
-                        <button>Add a book</button>
-                    </Link>
-                </div>
+                }
             </div>
         )
     }
+
 }
 
-export default ListBooks
+export default SearchBooks
