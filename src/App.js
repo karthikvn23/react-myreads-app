@@ -27,7 +27,6 @@ class BooksApp extends React.Component {
   componentDidMount() {
       BooksAPI.getAll()
           .then((books) => {
-                        console.log(books)
                       this.setState(({books}) )
                     }
                   )
@@ -41,10 +40,15 @@ class BooksApp extends React.Component {
                   Object.keys(this.bookShelves).forEach((shelfName) => {
                                   updateResponse[shelfName].forEach(
                                       (bookId) => {
-                                          const index = this.state.books.findIndex(book => book.id === bookId)
-                                          let tempBook = this.state.books[index]
-                                          tempBook['shelf'] = shelfName
-                                          updatedBooks.push(tempBook);
+                                          const index = this.state.books.findIndex((searchBook) => searchBook.id === bookId)
+                                          if(index === -1){ // Indicates that book from search result is being added to shelf, hence index is -1
+                                              book['shelf'] = shelf
+                                              updatedBooks.push(book)
+                                          }else{
+                                              let tempBook = this.state.books[index]
+                                              tempBook['shelf'] = shelfName
+                                              updatedBooks.push(tempBook);
+                                          }
                                       }
                                   )
                       }
@@ -91,7 +95,20 @@ class BooksApp extends React.Component {
               }
               />
                   <Route
-                      path='/search' component={SearchBooks}
+                      path='/search' render={
+                      ({history}) => (
+                        <SearchBooks addBookFromSearch={
+                                (book, shelf) => {
+                                        this.changeBookShelf(book, shelf)
+                                        // history.push('/')
+                                    }
+                                }
+                                     currentBooks={
+                                         this.state.books
+                                     }
+                        />
+                      )
+                      }
                   />
           </BrowserRouter>
       </div>

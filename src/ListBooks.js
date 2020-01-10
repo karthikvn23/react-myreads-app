@@ -22,7 +22,6 @@ class ListBooks extends Component{
                                                     <div className="book-shelf-changer">
                                                         <select onChange={
                                                             (event) => {
-                                                                console.log('event value', event.target.value)
                                                                 this.props.shelfUpdateHandler(book, event.target.value)
                                                             }
                                                         }
