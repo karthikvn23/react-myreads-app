@@ -21,6 +21,7 @@ class SearchBooks extends  Component{
     render(){
         const { currentBooks } = this.props
 
+        // Adds imageLinks property if it's not present
         const showBooks = this.state.searchBookResults.map(
             (book) => {
                 if( ! book.hasOwnProperty('imageLinks'))
@@ -51,7 +52,7 @@ class SearchBooks extends  Component{
                                 showBooks.map(
                                     (book) => {
 
-                                                let index = currentBooks.findIndex( (currentBook) => currentBook.id === book.id)
+                                                const index = currentBooks.findIndex( (currentBook) => currentBook.id === book.id)
                                                 index !== -1 ? book['shelf'] = currentBooks[index]['shelf']: book['shelf'] = 'none'
 
                                                 return(
