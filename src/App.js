@@ -8,9 +8,9 @@ import { BrowserRouter, Route } from 'react-router-dom';
 class BooksApp extends React.Component {
 
   bookShelves = {
-                  currentlyReading: {shelfName: 'Currently Reading'},
-                  wantToRead: {shelfName: 'Want to Read'},
-                  read: {shelfName:'Read'}
+                  currentlyReading: 'Currently Reading',
+                  wantToRead: 'Want to Read',
+                  read: 'Read'
                 }
 
   state = {

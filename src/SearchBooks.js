@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 
 class SearchBooks extends  Component{
 
+    _isMounted = false
+
     state = {
         searchBookResults: []
     }
@@ -13,22 +15,36 @@ class SearchBooks extends  Component{
             BooksAPI.search(query)
                 .then((searchBookResults) => {
                         if(searchBookResults !== 'undefined')
-                            this.setState(({searchBookResults}) )
+                            if(this._isMounted)
+                                this.setState(({searchBookResults}) )
                     }
                 )
+        else if (query === '' && this._isMounted)
+            this.setState(({searchBookResults: []}) )
+    }
+
+    componentDidMount(){
+        this._isMounted = true
+    }
+
+    componentWillUnmount(){
+        this._isMounted = false
     }
 
     render(){
         const { currentBooks } = this.props
 
         // Adds imageLinks property if it's not present
-        const showBooks = this.state.searchBookResults.map(
-            (book) => {
-                if( ! book.hasOwnProperty('imageLinks'))
-                    book['imageLinks']=[]
-                return book
-            }
-        )
+        let showBooks
+        if(typeof(this.state.searchBookResults['items']) === 'undefined'){
+            showBooks = this.state.searchBookResults.map(
+                (book) => {
+                    if( ! book.hasOwnProperty('imageLinks'))
+                        book['imageLinks']=[]
+                    return book
+                }
+            )
+        }
 
         return(
             <div className="search-books">
