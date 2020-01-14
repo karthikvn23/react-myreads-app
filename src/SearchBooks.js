@@ -4,6 +4,10 @@ import { Link } from 'react-router-dom';
 
 class SearchBooks extends  Component{
 
+    /** Making use of _isMounted not to perform setState if the component is unmounted.
+     * This will happen when a user has typed a query in search page and returns to main page even before Search API call has completed
+     * Variable is set to false in 'componentWillUnmount' and setState will be called only if _isMounted is true
+     **/
     _isMounted = false
 
     state = {
