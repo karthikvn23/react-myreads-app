@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import * as BooksAPI from "./BooksAPI";
 import { Link } from 'react-router-dom';
+import {debounce} from 'lodash';
 
 class SearchBooks extends  Component{
 
@@ -14,7 +15,8 @@ class SearchBooks extends  Component{
         searchBookResults: []
     }
 
-    performSearch = (query) => {
+    performSearch = debounce(
+        (query) => {
         if( query !== '')
             BooksAPI.search(query)
                 .then((searchBookResults) => {
@@ -25,6 +27,31 @@ class SearchBooks extends  Component{
                 )
         else if (query === '' && this._isMounted)
             this.setState(({searchBookResults: []}) )
+    }, 250)
+
+    /**
+     * Debouncing
+     * The function will be called after it stops being called for 250 milliseconds, this is to improve application performance
+     * Detailed explanation can be found here: https://davidwalsh.name/javascript-debounce-function
+     *
+     * @param func
+     * @param wait
+     * @param immediate
+     * @returns {Function}
+     */
+    debounce(func, wait, immediate) {
+        var timeout
+        return function() {
+            var context = this, args = arguments;
+            var later = function() {
+                timeout = null;
+                if (!immediate) func.apply(context, args);
+            };
+            var callNow = immediate && !timeout;
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+            if (callNow) func.apply(context, args);
+        }
     }
 
     componentDidMount(){
